@@ -209,49 +209,57 @@ function setupHover(num){
 }
 
 function renderWaypoints(wpts){
-  const cols=wpts.filter(w=>w.type==="col"&&!w.name.toLowerCase().includes("finish"));
-  const vps=wpts.filter(w=>w.type==="vp");
-  const tunnels=wpts.filter(w=>w.type==="tunnel");
-  const stravaStart=wpts.find(w=>w.type==="strava"&&w.strava&&w.name.toLowerCase().includes("start"));
-  const stravaEnd=wpts.find(w=>w.type==="strava"&&(w.name.toLowerCase().includes("einde")||w.name.toLowerCase().includes("eind")));
-  let html="";
+  var cols=wpts.filter(function(w){return w.type==="col"&&w.name.toLowerCase().indexOf("finish")===-1;});
+  var vps=wpts.filter(function(w){return w.type==="vp";});
+  var tunnels=wpts.filter(function(w){return w.type==="tunnel";});
+  var stravaStart=null,stravaEnd=null;
+  for(var i=0;i<wpts.length;i++){
+    var w=wpts[i];
+    if(w.type==="strava"&&w.strava&&w.name.toLowerCase().indexOf("start")!==-1)stravaStart=w;
+    if(w.type==="strava"&&(w.name.toLowerCase().indexOf("einde")!==-1||w.name.toLowerCase().indexOf("eind")!==-1))stravaEnd=w;
+  }
+  var html="";
   if(cols.length){
-    html+=`<div class="section-title" style="color:var(--accent);margin-top:0">⛰ Cols &amp; klimmen</div><div class="cols-list">`;
-    for(const c of cols){
-      const cfBtn=c.cflink?`<a href="${c.cflink}" target="_blank" class="col-link">Climbfinder ↗</a>`:"";
-      html+=`<div class="col-item"><span class="col-name">${c.name}</span><span class="col-km">km ${c.km}</span>${cfBtn}</div>`;
+    html+='<div class="section-title" style="color:var(--accent);margin-top:0">\u26f0 Cols &amp; klimmen</div><div class="cols-list">';
+    for(var i=0;i<cols.length;i++){
+      var c=cols[i];
+      var cfBtn=c.cflink?('<a href="'+c.cflink+'" target="_blank" class="col-link">Climbfinder \u2197</a>'):"";
+      html+='<div class="col-item"><span class="col-name">'+c.name+'</span><span class="col-km">km '+c.km+'</span>'+cfBtn+'</div>';
     }
-    html+=`</div>`;
+    html+='</div>';
   }
   if(vps.length){
-    html+=`<div class="section-title" style="color:var(--green)">🟢 Verzorgingsposten</div><div class="vp-list">`;
-    for(const v of vps){
-      html+=`<div class="vp-item"><span class="vp-km">km ${v.km}</span><span class="vp-name">${v.name.replace("Verzorgingspost ","VP ")}</span></div>`;
+    html+='<div class="section-title" style="color:var(--green)">\ud83d\udfe2 Verzorgingsposten</div><div class="vp-list">';
+    for(var i=0;i<vps.length;i++){
+      var v=vps[i];
+      html+='<div class="vp-item"><span class="vp-km">km '+v.km+'</span><span class="vp-name">'+v.name.replace("Verzorgingspost ","VP ")+'</span></div>';
     }
-    html+=`</div>`;
+    html+='</div>';
   }
   if(tunnels.length){
-    html+=`<div class="section-title" style="color:var(--blue)">🔦 Tunnels</div><div class="tunnel-list">`;
-    for(const t of tunnels){
-      html+=`<div class="tunnel-item"><span class="tunnel-km">km ${t.km}</span><span>${t.name}</span></div>`;
+    html+='<div class="section-title" style="color:var(--blue)">\ud83d\udd26 Tunnels</div><div class="tunnel-list">';
+    for(var i=0;i<tunnels.length;i++){
+      var t=tunnels[i];
+      html+='<div class="tunnel-item"><span class="tunnel-km">km '+t.km+'</span><span>'+t.name+'</span></div>';
     }
-    html+=`</div>`;
+    html+='</div>';
   }
   if(stravaStart&&stravaStart.strava){
-    const startKm=stravaStart.km;
-    const endKm=stravaEnd?stravaEnd.km:null;
-    const lenStr=endKm?` · ${(endKm-startKm).toFixed(1)} km`:"";
-    html+=`<div class="section-title" style="color:#fc4c02;margin-top:14px">🟠 Strava Challenge</div>
-    <div class="strava-block">
-      <div class="strava-info">
-        <div class="strava-meta">Start: <strong>km ${startKm}</strong>${endKm?` &nbsp;·&nbsp; Finish: <strong>km ${endKm.toFixed(1)}</strong>`:""}</div>
-        <div class="strava-meta">Lengte:<strong>${lenStr.replace(" · ","")}</strong></div>
-      </div>
-      <a href="${stravaStart.strava}" target="_blank" class="strava-btn">Open segment ↗</a>
-    </div>`;
+    var startKm=stravaStart.km;
+    var endKm=stravaEnd?stravaEnd.km:null;
+    var lenStr=endKm?(+(endKm-startKm)).toFixed(1)+" km":"";
+    html+='<div class="section-title" style="color:#fc4c02;margin-top:14px">\ud83d\udfe0 Strava Challenge</div>';
+    html+='<div class="strava-block">';
+    html+='<div class="strava-info">';
+    html+='<div class="strava-meta">Start: <strong>km '+startKm+'</strong>'+(endKm?' &nbsp;&middot;&nbsp; Finish: <strong>km '+endKm.toFixed(1)+'</strong>':"")+'</div>';
+    if(lenStr)html+='<div class="strava-meta">Lengte: <strong>'+lenStr+'</strong></div>';
+    html+='</div>';
+    html+='<a href="'+stravaStart.strava+'" target="_blank" class="strava-btn">Open segment \u2197</a>';
+    html+='</div>';
   }
   return html;
 }
+
 
 function renderStages(){
   document.getElementById("stages").innerHTML=STAGES.map(s=>`
