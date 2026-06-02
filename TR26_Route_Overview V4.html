@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>The Ride 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f0e0c; --card:#1a1917; --card2:#221f1c; --border:#2e2b27;
+    --text:#f0ece4; --muted:#7a7268; --accent:#e05c1a; --accent2:#f5a623;
+    --green:#4caf7d; --amber:#f5a623; --red:#e05c5c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+  .hero{background:linear-gradient(160deg,#1c1108 0%,#0f0e0c 60%);padding:40px 20px 28px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(224,92,26,0.12) 0%,transparent 70%);pointer-events:none;}
+  .hero-label{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:10px;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,7vw,42px);font-weight:700;line-height:1.1;margin-bottom:6px;}
+  .hero-sub{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:22px;line-height:1.5;}
+  .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .total-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+  .total-label{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:4px;}
+  .total-value{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);}
+  .total-unit{font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+
+  .refresh-wrap{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .refresh-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;flex-shrink:0;transition:opacity 0.15s;}
+  .refresh-btn:disabled{opacity:0.45;}
+  #wxStatus{font-size:11px;color:var(--muted);line-height:1.4;}
+
+  .stages{padding:16px 16px 40px;display:flex;flex-direction:column;gap:16px;}
+  .stage-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+
+  .stage-top{display:flex;align-items:stretch;border-bottom:1px solid var(--border);}
+  .stage-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--accent);width:64px;flex-shrink:0;padding:14px 6px;text-align:center;}
+  .badge-label{font-size:8px;text-transform:uppercase;letter-spacing:0.2em;opacity:0.75;}
+  .badge-num{font-family:'Playfair Display',serif;font-size:26px;line-height:1;}
+  .badge-date{font-size:9px;opacity:0.85;margin-top:3px;line-height:1.3;}
+  .stage-info{flex:1;padding:12px 14px;min-width:0;}
+  .stage-name{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:3px;}
+  .stage-route{font-size:11px;color:var(--muted);}
+  .stage-stars{color:var(--accent2);font-size:11px;letter-spacing:1px;}
+  .stage-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35;}
+
+  .metrics-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+  .m-cell{padding:10px 10px;border-right:1px solid var(--border);}
+  .m-cell:last-child{border-right:none;}
+  .m-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:3px;}
+  .m-val{font-family:'Playfair Display',serif;font-size:15px;color:var(--text);line-height:1.1;}
+  .m-unit{font-size:10px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+
+  .climb-bar-wrap{padding:8px 14px 10px;border-bottom:1px solid var(--border);}
+  .climb-bar-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;}
+  .climb-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+  .climb-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;}
+
+  /* Route detail panel toggle */
+  .detail-btn{width:100%;padding:12px 14px;background:transparent;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left;}
+  .detail-btn:hover{background:rgba(255,255,255,0.03);}
+  .detail-btn .chevron{font-size:11px;color:var(--muted);transition:transform 0.2s;}
+  .detail-btn.open .chevron{transform:rotate(180deg);}
+  .detail-panel{display:none;border-bottom:1px solid var(--border);padding:14px;}
+  .detail-panel.open{display:block;}
+
+  .cols-section{margin-bottom:12px;}
+  .cols-title{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);margin-bottom:8px;font-weight:500;}
+  .cols-list{display:flex;flex-direction:column;gap:6px;}
+  .col-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 12px;}
+  .col-name{font-size:13px;font-weight:500;}
+  .col-ele{font-size:12px;color:var(--accent2);font-family:'Playfair Display',serif;}
+
+  .route-summary{font-size:12px;color:var(--muted);line-height:1.6;}
+  .route-summary strong{color:var(--text);}
+
+  .supply-list{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
+  .supply-item{font-size:11px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;}
+  .supply-dot{color:var(--accent);flex-shrink:0;margin-top:2px;}
+
+  .warning-list{margin-top:8px;display:flex;flex-direction:column;gap:4px;}
+  .warning-item{font-size:11px;color:var(--amber);display:flex;align-items:flex-start;gap:6px;}
+
+  /* Weather */
+  .wx-points{display:flex;flex-direction:column;}
+  .wx-point{display:grid;grid-template-columns:90px 1fr;border-bottom:1px solid var(--border);}
+  .wx-point:last-child{border-bottom:none;}
+  .wx-point-label{padding:12px;background:var(--card2);border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;}
+  .wx-pt-time{font-size:13px;font-weight:500;color:var(--text);}
+  .wx-pt-name{font-size:10px;color:var(--muted);margin-top:1px;}
+  .wx-pt-ele{font-size:10px;color:var(--accent2);margin-top:2px;}
+  .wx-data{padding:12px 14px;display:flex;align-items:center;gap:12px;min-height:64px;}
+  .wx-icon-big{font-size:28px;flex-shrink:0;}
+  .wx-right{flex:1;min-width:0;}
+  .wx-temp{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);}
+  .wx-cond{font-size:11px;color:var(--muted);margin-top:1px;}
+  .wx-details-row{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap;}
+  .wx-pill{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text);white-space:nowrap;}
+  .wx-loading-cell{padding:14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+  .wx-outside{padding:14px;font-size:11px;color:var(--muted);font-style:italic;display:flex;align-items:center;}
+  .wx-err{padding:14px;font-size:11px;color:var(--red);display:flex;align-items:center;}
+  .spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  footer{text-align:center;padding:24px 20px;font-size:11px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">The Ride 2026 · Route Overview</div>
+  <h1>Ventoux<br>naar Valkenburg</h1>
+  <div class="hero-sub">7 t/m 14 juni · 8 etappes<br>Provence → Alpen → Jura → Vogezen → Ardennen → Limburg</div>
+  <div class="totals">
+    <div class="total-item"><div class="total-label">Afstand</div><div class="total-value">1.382 <span class="total-unit">km</span></div></div>
+    <div class="total-item"><div class="total-label">Hoogtemeters</div><div class="total-value">20.646 <span class="total-unit">m</span></div></div>
+    <div class="total-item"><div class="total-label">Gem. per dag</div><div class="total-value">173 <span class="total-unit">km</span></div></div>
+    <div class="total-item"><div class="total-label">Zwaarste</div><div class="total-value">E2 <span class="total-unit">★★★★★</span></div></div>
+  </div>
+</div>
+
+<div class="refresh-wrap">
+  <div id="wxStatus">Weersvoorspelling ophalen...</div>
+  <button class="refresh-btn" onclick="refreshAllWeather()" id="refreshBtn">↺ Ververs</button>
+</div>
+
+<div class="stages" id="stages"></div>
+
+<footer>
+  Weersdata: Open-Meteo · Start 08:00 · Midden 12:00 · Finish 16:00 lokale tijd<br>
+  Routedata uit GPX-bestanden TR26 · <span id="genDate"></span>
+</footer>
+
+<script>
+const STAGES = [
+  {
+    num:1, date:"zo 7/6", isoDate:"2026-06-07", name:"De Kale Berg", stars:"★★★★",
+    dist:161.1, gain:2916, loss:2387, maxElev:1876,
+    startName:"Bédoin", endName:"La Mure-Argens",
+    note:"Vertrek aan de voet van de Mont Ventoux. De klim naar de top is het eerste competitieve segment.",
+    summary:"De etappe begint in Bédoin, aan de zuidkant van de Ventoux. Na de beklimming van de kale reus (1876m) volgt een technische afdaling richting Sault. Via de Col de la Madeleine en Col de Macuègne rijdt de route door de Haute-Provence naar La Mure-Argens. De laatste 15km lopen over drukkere wegen vanwege een auto-race-event in de regio.",
+    cols:[
+      {name:"Mont Ventoux", ele:1876},
+      {name:"Col de la Madeleine", ele:null},
+      {name:"Col de Macuègne", ele:null}
+    ],
+    supply:["VP1 bij km ~95 (Sault-regio)","VP2 bij km ~145","Drinkfontein km ~130","Toilet km ~100"],
+    warnings:["Laatste 15km: drukke wegen (auto-race-event)","Voorzichtig bij oversteek afdaling Ventoux"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"Bédoin",          ele:260,  lat:44.2371, lon:5.1497},
+      {label:"Midden", time:"12:00", loc:"Ventoux-regio",   ele:663,  lat:44.1851, lon:5.4585},
+      {label:"Finish", time:"16:00", loc:"La Mure-Argens",  ele:789,  lat:44.5195, lon:5.8013}
+    ]
+  },
+  {
+    num:2, date:"ma 8/6", isoDate:"2026-06-08", name:"In de voetsporen van de Tour", stars:"★★★★★",
+    dist:154.3, gain:3827, loss:3906, maxElev:1986,
+    startName:"La Mure-Argens", endName:"Bourg-d'Oisans",
+    note:"Zwaarste etappe van de tour. Drie echte cols en een finish bovenop de Alpe d'Huez.",
+    summary:"Van La Mure-Argens klimt de route via de Col du Festre naar de Col de Parquetout. Daarna volgt de Col d'Ornon (1367m) vóór de afdaling naar Le Bourg-d'Oisans. Het competitieve segment is de Col de Sarenne (1999m) gevolgd door de iconische klim naar Alpe d'Huez — finish op de top. Daarna afdalen naar het kamp bij Bourg-d'Oisans.",
+    cols:[
+      {name:"Col du Festre", ele:1441},
+      {name:"Col de Parquetout", ele:1099},
+      {name:"Col d'Ornon", ele:1367},
+      {name:"Col de Sarenne", ele:1999},
+      {name:"Alpe d'Huez (finish segment)", ele:1860}
+    ],
+    supply:["VP1 bij km ~60 (Col de Parquetout)","VP2 bij km ~120 (Col de Sarenne / Alpe d'Huez)","Toilet + water bij Bourg-d'Oisans"],
+    warnings:["3 tunnels: verlichting verplicht","Drukke weg 13km na Col d'Ornon","Technische smalle weg na Alpe d'Huez-top"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"La Mure-Argens",  ele:789,  lat:44.5201, lon:5.8037},
+      {label:"Midden", time:"12:00", loc:"Col d'Ornon",     ele:1015, lat:44.9684, lon:5.9613},
+      {label:"Finish", time:"16:00", loc:"Bourg-d'Oisans",  ele:710,  lat:45.1146, lon:6.0081}
+    ]
+  },
+  {
+    num:3, date:"di 9/6", isoDate:"2026-06-09", name:"De Alpenbroeders", stars:"★★★★★",
+    dist:189.4, gain:3439, loss:3907, maxElev:2058,
+    startName:"Bourg-d'Oisans", endName:"Chambéry",
+    note:"Langste etappe. De Col de la Croix-de-Fer is het competitieve segment. Daarna lange afdaling naar Chambéry.",
+    summary:"Vanuit Bourg-d'Oisans begint de klim direct richting de Col de la Croix-de-Fer (2067m) — het Strava-segment en hoogtepunt van de dag. Na een technische afdaling door Saint-Jean-de-Maurienne volgen de Col du Grand Cucheron en Col de Champ-Laurent. De laatste 50km richting Chambéry lopen over drukke wegen en fietspaden met meerdere gevaarlijke oversteken. Gefocust blijven in dit deel is essentieel.",
+    cols:[
+      {name:"Col de la Croix-de-Fer", ele:2067},
+      {name:"Col du Grand Cucheron", ele:1188},
+      {name:"Col de Champ-Laurent", ele:992}
+    ],
+    supply:["VP1 bij Col de la Croix-de-Fer","VP2 bij km ~130 (na Grand Cucheron)","Drinkfontein km ~95","Toilet km ~80 en bij Chambéry"],
+    warnings:["Tunnel bij km ~40: verlichting","Technische afdaling na Croix-de-Fer (8km)","Laatste 50km: veel drukke wegen en gevaarlijke oversteken"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"Bourg-d'Oisans",   ele:710,  lat:45.1145, lon:6.0077},
+      {label:"Midden", time:"12:00", loc:"Croix-de-Fer regio",ele:665,  lat:45.4810, lon:6.2625},
+      {label:"Finish", time:"16:00", loc:"Chambéry",          ele:242,  lat:45.8121, lon:5.8483}
+    ]
+  },
+  {
+    num:4, date:"wo 10/6", isoDate:"2026-06-10", name:"Het avontuur van de Jura", stars:"★★★★",
+    dist:192.5, gain:2565, loss:2465, maxElev:1271,
+    startName:"Chambéry", endName:"Pontarlier",
+    note:"Overgang van de Alpen naar het Juragebergte. Langste etappe qua afstand.",
+    summary:"Vanuit Chambéry klimt de route geleidelijk door de Ain-vlakte richting het Juragebergte. Via de Tabagnozpas (1271m) bereik je het hoogste punt van de dag. Het Strava-segment loopt over een lokale klim bij Valserhône. De route eindigt in de sfeervolle vestingstad Pontarlier, hoog op het Jura-plateau. Let op een smalle 180-graden-bocht in de afdaling naar de finish.",
+    cols:[
+      {name:"Tabagnozpas", ele:1271}
+    ],
+    supply:["VP1 bij km ~80 (Valserhône-regio)","VP2 bij km ~150","Water + toilet bij km ~120","Watertap km ~25"],
+    warnings:["Drukke weg 7km vóór afdaling bij km ~40","300m over drukke N5 bij Tabagnozpas","Scherpe 180°-bocht in afdaling naar Pontarlier","Slecht wegdek km ~165"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"Chambéry",         ele:237,  lat:45.8129, lon:5.8468},
+      {label:"Midden", time:"12:00", loc:"Jura plateau",     ele:1111, lat:46.4784, lon:6.0668},
+      {label:"Finish", time:"16:00", loc:"Pontarlier",        ele:337,  lat:47.1007, lon:6.1603}
+    ]
+  },
+  {
+    num:5, date:"do 11/6", isoDate:"2026-06-11", name:"Veelbelovende Vogezen", stars:"★★★★",
+    dist:180.6, gain:2703, loss:2303, maxElev:987,
+    startName:"Pontarlier", endName:"Épinal",
+    note:"Van het Jura-plateau de Vogezen in. Meerdere cols op rij in de tweede helft.",
+    summary:"Vanuit Pontarlier daalt de route naar de Saône-vlakte. Na Vesoul klimt de route de Vogezen in via de Col des Croix, Col de Morbieux en Col de la Croix des Moinats — drie cols achter elkaar in de laatste 50km. Het Strava-segment loopt over de klim naar de Col de la Croix des Moinats. De etappe eindigt op hoogte in Épinal. Steile en technische afdalingen in dit deel vragen om voorzichtigheid.",
+    cols:[
+      {name:"Col des Croix", ele:null},
+      {name:"Col de Morbieux", ele:null},
+      {name:"Col de la Croix des Moinats", ele:null},
+      {name:"Col de Grande Basse", ele:null}
+    ],
+    supply:["VP1 bij km ~100","VP2 bij km ~148","Toilet + water bij km ~110"],
+    warnings:["Drukke afdaling 8km bij km ~80","Steile technische afdaling na Col des Croix","Ochtendspits op eerste klim vanuit Pontarlier"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"Pontarlier",        ele:337,  lat:47.1012, lon:6.1600},
+      {label:"Midden", time:"12:00", loc:"Vogezen midden",    ele:318,  lat:47.6486, lon:6.5445},
+      {label:"Finish", time:"16:00", loc:"Épinal",            ele:737,  lat:48.0782, lon:6.9426}
+    ]
+  },
+  {
+    num:6, date:"vr 12/6", isoDate:"2026-06-12", name:"De klassieke overgangs-etappe", stars:"★★",
+    dist:170.7, gain:1164, loss:1736, maxElev:798,
+    startName:"Épinal", endName:"Corny-sur-Moselle",
+    note:"Vlakste etappe. Hersteldag vóór de Ardennen. Eindig bij Camping Pacquis aan de Moezel.",
+    summary:"Vanuit Épinal daalt de route via de Col de Martimpré naar de Moezel-vallei. Het is de makkelijkste dag van de tour — ideaal om te herstellen. Via Lunéville en Nancy richting de Moezel. Het Strava-segment loopt over een kleine heuvel net vóór de finish bij Corny-sur-Moselle. Let op: weinig openbare toiletten en watertappunten onderweg. Goed tanken bij VP's.",
+    cols:[
+      {name:"Col de Martimpré", ele:798}
+    ],
+    supply:["VP1 bij km ~75","VP2 bij km ~145"],
+    warnings:["Weinig toiletten en water onderweg — goed plannen","Drukke weg eerste 3,5km (ochtendspits)","Gevaarlijke oversteek bij km ~150"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"Épinal",             ele:744,  lat:48.0782, lon:6.9426},
+      {label:"Midden", time:"12:00", loc:"Lorraine",           ele:275,  lat:48.6310, lon:6.6460},
+      {label:"Finish", time:"16:00", loc:"Corny-sur-Moselle",  ele:172,  lat:49.0404, lon:6.0591}
+    ]
+  },
+  {
+    num:7, date:"za 13/6", isoDate:"2026-06-13", name:"Op naar de Ardennen", stars:"★★★★",
+    dist:184.4, gain:2122, loss:2055, maxElev:543,
+    startName:"Corny-sur-Moselle", endName:"La Roche-en-Ardenne",
+    note:"Van de Moezel de Belgische Ardennen in. Korte, explosive klimmen — jouw diesel-profiel wordt getest.",
+    summary:"Vanuit Corny-sur-Moselle passeert de route Metz en rijdt via Luxemburg de Ardennen in. De Croix Saint-Clément is een vroeg klimmetje. Het Strava-segment ligt diep in de Ardennen. De route eindigt in La Roche-en-Ardenne, ingebouwd in een dal omgeven door bossen. Let op: nauwelijks openbare waterpunten buiten VP's — goed bijvullen.",
+    cols:[
+      {name:"Croix Saint-Clément", ele:null}
+    ],
+    supply:["VP1 bij km ~110 (Ardennen)","VP2 bij km ~160","Toilet bij Jarny (km ~30)"],
+    warnings:["Nauwelijks water buiten VP's — bijvullen bij elke post","Gevaarlijke oversteek km ~120","Slecht wegdek km ~180","Ochtendspits rondom Metz"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"Corny-sur-Moselle",     ele:171,  lat:49.0404, lon:6.0592},
+      {label:"Midden", time:"12:00", loc:"Ardennen",              ele:271,  lat:49.5777, lon:5.6686},
+      {label:"Finish", time:"16:00", loc:"La Roche-en-Ardenne",   ele:238,  lat:50.1770, lon:5.5989}
+    ]
+  },
+  {
+    num:8, date:"zo 14/6", isoDate:"2026-06-14", name:"De heuvelklassiekers", stars:"★★★",
+    dist:149.5, gain:1910, loss:2076, maxElev:558,
+    startName:"La Roche-en-Ardenne", endName:"Valkenburg",
+    note:"Slotrit via klassieke Waalse heuvels. Finish bij het Shimano Experience Center in Valkenburg.",
+    summary:"De slotrit begint met de Col de la Haussire vanuit La Roche-en-Ardenne. Via de Ardennen klimt de route naar het Drielandenpunt — het hoogste punt van Nederland op 322m. Daarna volgt het Strava-segment over de Col du Rosier (de Belgische Waalse Ardennen). Via de Gulperberg richting Valkenburg. Let op: tussen 14:00-17:30 is er een wielerkoers rondom de Cauberg en Bemelerberg — volg de aanwijzingen van de organisatie. Finish bij het Shimano Experience Center.",
+    cols:[
+      {name:"Col de la Haussire", ele:null},
+      {name:"Col du Rosier", ele:null},
+      {name:"Drielandenpunt (hoogste punt NL)", ele:322},
+      {name:"Gulperberg", ele:null}
+    ],
+    supply:["VP1 bij Col du Rosier (km ~75)","VP2 bij Drielandenpunt (km ~105)"],
+    warnings:["Wielerkoers Cauberg/Bemelerberg 14:00–17:30 — volg motards","Gevaarlijke oversteek km ~55","Drukke weg km ~60"],
+    points:[
+      {label:"Start",  time:"08:00", loc:"La Roche-en-Ardenne",  ele:234,  lat:50.1770, lon:5.5988},
+      {label:"Midden", time:"12:00", loc:"Col du Rosier regio",  ele:283,  lat:50.5973, lon:5.9310},
+      {label:"Finish", time:"16:00", loc:"Valkenburg",           ele:67,   lat:50.8660, lon:5.8215}
+    ]
+  }
+];
+
+const HOURS=[8,12,16];
+const WX_ICONS={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌧️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"❄️",80:"🌦️",81:"🌧️",82:"⛈️",95:"⛈️",99:"⛈️"};
+const WX_DESC={0:"Helder",1:"Overwegend helder",2:"Gedeeltelijk bewolkt",3:"Bewolkt",45:"Mist",48:"Rijpmist",51:"Lichte motregen",53:"Motregen",55:"Zware motregen",61:"Lichte regen",63:"Regen",65:"Zware regen",71:"Lichte sneeuw",73:"Sneeuw",75:"Zware sneeuw",80:"Regenbuien",81:"Zware buien",82:"Stortbuien",95:"Onweer",99:"Zwaar onweer"};
+function windDir(d){return["N","NO","O","ZO","Z","ZW","W","NW"][Math.round(d/45)%8];}
+function rainCol(p){return p>60?"var(--red)":p>30?"var(--amber)":"var(--green)";}
+const maxGain=Math.max(...STAGES.map(s=>s.gain));
+
+function renderStages(){
+  document.getElementById('stages').innerHTML=STAGES.map(s=>`
+    <div class="stage-card">
+      <div class="stage-top">
+        <div class="stage-badge">
+          <div class="badge-label">Etappe</div>
+          <div class="badge-num">${s.num}</div>
+          <div class="badge-date">${s.date}</div>
+        </div>
+        <div class="stage-info">
+          <div class="stage-name">${s.name}</div>
+          <div class="stage-route"><span class="stage-stars">${s.stars}</span> · ${s.startName} → ${s.endName}</div>
+          <div class="stage-note">${s.note}</div>
+        </div>
+      </div>
+      <div class="metrics-row">
+        <div class="m-cell"><div class="m-label">Afstand</div><div class="m-val">${s.dist}<span class="m-unit"> km</span></div></div>
+        <div class="m-cell"><div class="m-label">Klimmen</div><div class="m-val">+${s.gain.toLocaleString('nl')}<span class="m-unit"> m</span></div></div>
+        <div class="m-cell"><div class="m-label">Max hoogte</div><div class="m-val">${s.maxElev.toLocaleString('nl')}<span class="m-unit"> m</span></div></div>
+        <div class="m-cell"><div class="m-label">Daling</div><div class="m-val">−${s.loss.toLocaleString('nl')}<span class="m-unit"> m</span></div></div>
+      </div>
+      <div class="climb-bar-wrap">
+        <div class="climb-bar-label"><span>Klim-last t.o.v. zwaarste etappe</span><span>${Math.round((s.gain/maxGain)*100)}%</span></div>
+        <div class="climb-track"><div class="climb-fill" style="width:${Math.round((s.gain/maxGain)*100)}%"></div></div>
+      </div>
+
+      <button class="detail-btn" onclick="toggleDetail(${s.num})" id="btn-${s.num}">
+        <span>⛰ Cols &amp; routesamenvatting</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="detail-panel" id="detail-${s.num}">
+        ${s.cols.length>0?`
+        <div class="cols-section">
+          <div class="cols-title">Cols &amp; klimmen</div>
+          <div class="cols-list">
+            ${s.cols.map(c=>`
+              <div class="col-item">
+                <span class="col-name">${c.name}</span>
+                <span class="col-ele">${c.ele?c.ele+'m':'—'}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>`:''}
+        <div class="cols-title">Routesamenvatting</div>
+        <div class="route-summary">${s.summary}</div>
+        ${s.supply.length>0?`
+        <div class="cols-title" style="margin-top:12px">🟠 Verzorgingsposten</div>
+        <div class="supply-list">
+          ${s.supply.map(x=>`<div class="supply-item"><span class="supply-dot">·</span>${x}</div>`).join('')}
+        </div>`:''}
+        ${s.warnings.length>0?`
+        <div class="cols-title" style="margin-top:12px;color:var(--amber)">⚠ Aandachtspunten</div>
+        <div class="warning-list">
+          ${s.warnings.map(x=>`<div class="warning-item"><span>!</span>${x}</div>`).join('')}
+        </div>`:''}
+      </div>
+
+      <div class="wx-points">
+        ${s.points.map((p,pi)=>`
+          <div class="wx-point">
+            <div class="wx-point-label">
+              <div class="wx-pt-time">${p.time}</div>
+              <div class="wx-pt-name">${p.label}</div>
+              <div class="wx-pt-ele">${p.ele}m · ${p.loc}</div>
+            </div>
+            <div class="wx-data" id="wx-${s.num}-${pi}">
+              <div class="wx-loading-cell"><div class="spinner"></div></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleDetail(num){
+  const btn=document.getElementById(`btn-${num}`);
+  const panel=document.getElementById(`detail-${num}`);
+  btn.classList.toggle('open');
+  panel.classList.toggle('open');
+}
+
+async function fetchPointWeather(lat,lon,isoDate,hour){
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,winddirection_10m&timezone=Europe%2FParis&forecast_days=16`;
+  const res=await fetch(url);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data=await res.json();
+  if(data.error) throw new Error(data.reason||'API fout');
+  const target=`${isoDate}T${String(hour).padStart(2,'0')}:00`;
+  const idx=data.hourly.time.indexOf(target);
+  if(idx===-1) return null;
+  return{
+    temp:Math.round(data.hourly.temperature_2m[idx]),
+    code:data.hourly.weathercode[idx],
+    rain:Math.round(data.hourly.precipitation_probability[idx]),
+    wind:Math.round(data.hourly.windspeed_10m[idx]),
+    windDeg:Math.round(data.hourly.winddirection_10m[idx])
+  };
+}
+
+function renderCell(id,wx){
+  const el=document.getElementById(id);
+  if(!el) return;
+  if(wx===null){el.innerHTML=`<div class="wx-outside">Buiten voorspelvenster (max 16 dagen)</div>`;return;}
+  const icon=WX_ICONS[wx.code]??"🌡️";
+  const desc=WX_DESC[wx.code]??`code ${wx.code}`;
+  el.innerHTML=`
+    <div class="wx-icon-big">${icon}</div>
+    <div class="wx-right">
+      <div class="wx-temp">${wx.temp}°</div>
+      <div class="wx-cond">${desc}</div>
+      <div class="wx-details-row">
+        <span class="wx-pill">💨 ${wx.wind} km/h ${windDir(wx.windDeg)}</span>
+        <span class="wx-pill" style="color:${rainCol(wx.rain)}">🌧 ${wx.rain}%</span>
+      </div>
+    </div>`;
+}
+
+function setLoading(id){const el=document.getElementById(id);if(el)el.innerHTML=`<div class="wx-loading-cell"><div class="spinner"></div></div>`;}
+function setError(id,msg){const el=document.getElementById(id);if(el)el.innerHTML=`<div class="wx-err">⚠ ${msg}</div>`;}
+
+async function fetchStage(stage){
+  for(let pi=0;pi<stage.points.length;pi++){
+    const p=stage.points[pi];
+    const id=`wx-${stage.num}-${pi}`;
+    try{const wx=await fetchPointWeather(p.lat,p.lon,stage.isoDate,HOURS[pi]);renderCell(id,wx);}
+    catch(e){console.error(`E${stage.num} p${pi}:`,e);setError(id,e.message);}
+    await new Promise(r=>setTimeout(r,120));
+  }
+}
+
+async function refreshAllWeather(){
+  const btn=document.getElementById('refreshBtn');
+  const status=document.getElementById('wxStatus');
+  btn.disabled=true;btn.textContent='...';
+  STAGES.forEach(s=>s.points.forEach((_,pi)=>setLoading(`wx-${s.num}-${pi}`)));
+  for(let i=0;i<STAGES.length;i++){
+    status.textContent=`Etappe ${i+1} van ${STAGES.length} ophalen...`;
+    await fetchStage(STAGES[i]);
+  }
+  btn.disabled=false;btn.textContent='↺ Ververs';
+  status.textContent=`Bijgewerkt: ${new Date().toLocaleString('nl-NL',{dateStyle:'short',timeStyle:'short'})}`;
+}
+
+document.getElementById('genDate').textContent=new Date().toLocaleDateString('nl-NL',{dateStyle:'long'});
+renderStages();
+refreshAllWeather();
+</script>
+</body>
+</html>
