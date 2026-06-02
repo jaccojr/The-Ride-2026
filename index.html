@@ -339,14 +339,22 @@ async function fetchPointWeather(lat,lon,isoDate,hour){
   return{temp:Math.round(data.hourly.temperature_2m[idx]),code:data.hourly.weathercode[idx],rain:Math.round(data.hourly.precipitation_probability[idx]),wind:Math.round(data.hourly.windspeed_10m[idx]),windDeg:Math.round(data.hourly.winddirection_10m[idx])};
 }
 function renderWxCell(id,wx){
-  const el=document.getElementById(id);if(!el)return;
-  if(wx===null){el.innerHTML="<div class="wx-outside">Buiten voorspelvenster</div>";return;}
-  const icon=WX_ICONS[wx.code]||"🌡️";
-  const desc=WX_DESC[wx.code]||("code "+wx.code);
-  el.innerHTML=`<div class="wx-icon-big">${icon}</div><div class="wx-right"><div class="wx-temp">${wx.temp}°</div><div class="wx-cond">${desc}</div><div class="wx-details-row"><span class="wx-pill">💨 ${wx.wind} km/h ${windDir(wx.windDeg)}</span><span class="wx-pill" style="color:${rainCol(wx.rain)}">🌧 ${wx.rain}%</span></div></div>`;
+  var el=document.getElementById(id);if(!el)return;
+  if(wx===null){el.innerHTML='<div class="wx-outside">Buiten voorspelvenster</div>';return;}
+  var icon=WX_ICONS[wx.code]||'🌡️';
+  var desc=WX_DESC[wx.code]||('code '+wx.code);
+  var html='<div class="wx-icon-big">'+icon+'</div>';
+  html+='<div class="wx-right">';
+  html+='<div class="wx-temp">'+wx.temp+'°</div>';
+  html+='<div class="wx-cond">'+desc+'</div>';
+  html+='<div class="wx-details-row">';
+  html+='<span class="wx-pill">💨 '+wx.wind+' km/h '+windDir(wx.windDeg)+'</span>';
+  html+='<span class="wx-pill" style="color:'+rainCol(wx.rain)+'">🌧 '+wx.rain+'%</span>';
+  html+='</div></div>';
+  el.innerHTML=html;
 }
-function setWxLoading(id){const el=document.getElementById(id);if(el)el.innerHTML="<div class="wx-loading"><div class="spinner"></div></div>";}
-function setWxError(id,msg){const el=document.getElementById(id);if(el)el.innerHTML="<div class="wx-err">⚠ "+msg+"</div>";}
+function setWxLoading(id){var el=document.getElementById(id);if(el)el.innerHTML='<div class="wx-loading"><div class="spinner"></div></div>';}
+function setWxError(id,msg){var el=document.getElementById(id);if(el)el.innerHTML='<div class="wx-err">⚠ '+msg+'</div>';}
 async function fetchStage(stage){
   for(let pi=0;pi<stage.wxPoints.length;pi++){
     const p=stage.wxPoints[pi];const id="wx-"+stage.num+"-"+pi;
