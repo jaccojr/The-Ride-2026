@@ -116,7 +116,7 @@ footer{text-align:center;padding:24px 20px;font-size:11px;color:var(--muted);lin
     <div class="total-item"><div class="total-label">Afstand</div><div class="total-value">1.382 <span class="total-unit">km</span></div></div>
     <div class="total-item"><div class="total-label">Hoogtemeters</div><div class="total-value">20.646 <span class="total-unit">m</span></div></div>
     <div class="total-item"><div class="total-label">Gem. per dag</div><div class="total-value">173 <span class="total-unit">km</span></div></div>
-    <div class="total-item"><div class="total-label">Zwaarste</div><div class="total-value">E2 <span class="total-unit">★★★★★</span></div></div>
+    <div class="total-item"><div class="total-label">KM tot finish</div><div class="total-value" id="kmToFinish">—</div></div>
   </div>
 </div>
 <div class="refresh-wrap">
@@ -268,7 +268,7 @@ function renderWaypoints(wpts){
 
 function renderStages(){
   document.getElementById("stages").innerHTML=STAGES.map(s=>`
-    <div class="stage-card">
+    <div class="stage-card" id="stage-card-${s.num}">
       <div class="stage-top">
         <div class="stage-badge">
           <div class="badge-label">Etappe</div>
@@ -382,6 +382,59 @@ async function refreshAllWeather(){
 document.getElementById("genDate").textContent=new Date().toLocaleDateString("nl-NL",{dateStyle:"long"});
 renderStages();
 refreshAllWeather();
+initDayLogic();
+
+function initDayLogic(){
+  var today = new Date();
+  today.setHours(0,0,0,0);
+
+  var totalDist = 1382;
+  var activeStage = null;
+  var kmDone = 0;
+
+  for(var i=0;i<STAGES.length;i++){
+    var s = STAGES[i];
+    var parts = s.isoDate.split('-');
+    var stageDate = new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+    stageDate.setHours(0,0,0,0);
+
+    if(stageDate.getTime() === today.getTime()){
+      activeStage = s;
+      break;
+    }
+    if(stageDate < today){
+      kmDone += s.dist;
+    }
+  }
+
+  // KM tot finish
+  var kmLeft = Math.round(totalDist - kmDone);
+  var kmEl = document.getElementById('kmToFinish');
+  if(kmEl){
+    if(today < new Date(2026,5,7)){ // before tour
+      kmEl.innerHTML = totalDist + ' <span class="total-unit">km</span>';
+    } else if(today > new Date(2026,5,14)){ // after tour
+      kmEl.innerHTML = '0 <span class="total-unit">km</span>';
+    } else {
+      kmEl.innerHTML = kmLeft + ' <span class="total-unit">km</span>';
+    }
+  }
+
+  // Scroll to active stage
+  if(activeStage){
+    var el = document.getElementById('stage-card-'+activeStage.num);
+    if(el){
+      setTimeout(function(){
+        el.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 400);
+    }
+    // Highlight active stage badge
+    var badge = el ? el.querySelector('.stage-badge') : null;
+    if(badge){
+      badge.style.background = '#2e7d32';
+    }
+  }
+}
 </script>
 </body>
 </html>
