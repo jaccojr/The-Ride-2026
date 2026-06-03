@@ -247,8 +247,7 @@ function renderWaypoints(wpts){
     html+='<div class="section-title" style="color:var(--green)">\ud83d\udfe2 Verzorgingsposten</div><div class="vp-list">';
     for(var i=0;i<vps.length;i++){
       var v=vps[i];
-      var vpName=v.name
-  .replace(/Verzorgingspost (\d+)[\s\-]*[Ee]tappe (\d+)/,'VP $1 - Etappe $2');
+      var vpName=v.name.replace(/Verzorgingspost (\d+)[\s\S]*/,'VP $1');
 html+='<div class="vp-item"><span class="vp-km">km '+v.km+'</span><span class="vp-name">'+vpName+'</span></div>';
     }
     html+='</div>';
