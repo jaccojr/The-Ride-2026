@@ -19,6 +19,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .total-label{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:4px;}
 .total-value{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);}
 .total-unit{font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+.action-bar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.02);}
+.gps-btn{display:flex;align-items:center;gap:6px;padding:9px 14px;background:transparent;border:1.5px solid var(--green);color:var(--green);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.gps-btn:active{background:rgba(76,175,61,0.1);}
+.gps-result{flex:1;font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;text-align:center;}
+.gps-result a{color:var(--blue);text-decoration:none;}
+.emergency-btn{display:flex;align-items:center;gap:6px;padding:9px 14px;background:transparent;border:1.5px solid var(--red);color:var(--red);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+.emergency-btn:active{background:rgba(224,92,92,0.1);}
 .refresh-wrap{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .refresh-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;flex-shrink:0;transition:opacity 0.15s;}
 .refresh-btn:disabled{opacity:0.45;}
@@ -118,6 +125,11 @@ footer{text-align:center;padding:24px 20px;font-size:11px;color:var(--muted);lin
     <div class="total-item"><div class="total-label">Gem. per dag</div><div class="total-value">173 <span class="total-unit">km</span></div></div>
     <div class="total-item"><div class="total-label">KM tot finish</div><div class="total-value" id="kmToFinish">—</div></div>
   </div>
+</div>
+<div class="action-bar">
+  <button class="gps-btn" onclick="getLocation()" id="gpsBtn">📍 Haal locatie op</button>
+  <div id="gpsResult" class="gps-result"></div>
+  <a class="emergency-btn" href="tel:+31618418240" id="emergencyBtn">📞 Bel noodnummer</a>
 </div>
 <div class="refresh-wrap">
   <div id="wxStatus">Weersvoorspelling ophalen...</div>
@@ -376,7 +388,7 @@ async function refreshAllWeather(){
     status.textContent="Etappe "+(i+1)+" van "+STAGES.length+" ophalen...";
     await fetchStage(STAGES[i]);
   }
-  btn.disabled=false;btn.textContent="↺ Ververs";
+  btn.disabled=false;btn.textContent="🌤 Weer verversen";
   status.textContent="Bijgewerkt: "+new Date().toLocaleString("nl-NL",{dateStyle:"short",timeStyle:"short"});
 }
 document.getElementById("genDate").textContent=new Date().toLocaleDateString("nl-NL",{dateStyle:"long"});
@@ -434,6 +446,33 @@ function initDayLogic(){
       badge.style.background = '#2e7d32';
     }
   }
+}
+
+function getLocation(){
+  var btn=document.getElementById('gpsBtn');
+  var result=document.getElementById('gpsResult');
+  if(!navigator.geolocation){
+    result.textContent='GPS niet beschikbaar op dit apparaat.';
+    return;
+  }
+  btn.textContent='📍 Ophalen...';
+  btn.disabled=true;
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      var lat=pos.coords.latitude.toFixed(5);
+      var lon=pos.coords.longitude.toFixed(5);
+      var mapsUrl='https://maps.google.com/?q='+lat+','+lon;
+      result.innerHTML='<a href="'+mapsUrl+'" target="_blank">'+lat+', '+lon+' ↗</a>';
+      btn.textContent='📍 Haal locatie op';
+      btn.disabled=false;
+    },
+    function(err){
+      result.textContent='Locatie niet beschikbaar.';
+      btn.textContent='📍 Haal locatie op';
+      btn.disabled=false;
+    },
+    {enableHighAccuracy:true, timeout:10000}
+  );
 }
 </script>
 </body>
