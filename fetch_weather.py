@@ -28,14 +28,14 @@ POINTS = [
     {"stage":8,"isoDate":"2026-06-14","point":2,"label":"Finish",     "lat":50.8660,"lon":5.8215, "hour":16},
 ]
 
-def fetch_open_meteo(lat, lon, iso_date, hour, retries=3):
+def fetch_open_meteo(lat, lon, iso_date, hour, retries=5):
     url = (f"https://api.open-meteo.com/v1/forecast"
            f"?latitude={lat}&longitude={lon}"
            f"&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,winddirection_10m"
            f"&timezone=Europe%2FParis&forecast_days=16")
     for attempt in range(retries):
         try:
-            r = requests.get(url, timeout=20)
+            r = requests.get(url, timeout=30)
             r.raise_for_status()
             data = r.json()
             if data.get('error'):
@@ -59,11 +59,11 @@ def fetch_open_meteo(lat, lon, iso_date, hour, retries=3):
         except Exception:
             raise
 
-def fetch_wttr(lat, lon, iso_date, hour, retries=2):
+def fetch_wttr(lat, lon, iso_date, hour, retries=3):
     url = f"https://wttr.in/{lat},{lon}?format=j1"
     for attempt in range(retries):
         try:
-            r = requests.get(url, timeout=20)
+            r = requests.get(url, timeout=30)
             r.raise_for_status()
             data = r.json()
             from datetime import date
