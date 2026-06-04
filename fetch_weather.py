@@ -28,61 +28,80 @@ POINTS = [
     {"stage":8,"isoDate":"2026-06-14","point":2,"label":"Finish",     "lat":50.8660,"lon":5.8215, "hour":16},
 ]
 
-def fetch_open_meteo(lat, lon, iso_date, hour):
+def fetch_open_meteo(lat, lon, iso_date, hour, retries=3):
     url = (f"https://api.open-meteo.com/v1/forecast"
            f"?latitude={lat}&longitude={lon}"
            f"&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,winddirection_10m"
            f"&timezone=Europe%2FParis&forecast_days=16")
-    r = requests.get(url, timeout=10)
-    r.raise_for_status()
-    data = r.json()
-    if data.get('error'):
-        raise Exception(data.get('reason', 'API error'))
-    target = f"{iso_date}T{str(hour).zfill(2)}:00"
-    idx = data['hourly']['time'].index(target)
-    return {
-        "temp": round(data['hourly']['temperature_2m'][idx]),
-        "code": data['hourly']['weathercode'][idx],
-        "rain": round(data['hourly']['precipitation_probability'][idx]),
-        "wind": round(data['hourly']['windspeed_10m'][idx]),
-        "windDeg": round(data['hourly']['winddirection_10m'][idx]),
-        "src": "Open-Meteo"
-    }
+    for attempt in range(retries):
+        try:
+            r = requests.get(url, timeout=20)
+            r.raise_for_status()
+            data = r.json()
+            if data.get('error'):
+                raise Exception(data.get('reason', 'API error'))
+            target = f"{iso_date}T{str(hour).zfill(2)}:00"
+            idx = data['hourly']['time'].index(target)
+            return {
+                "temp": round(data['hourly']['temperature_2m'][idx]),
+                "code": data['hourly']['weathercode'][idx],
+                "rain": round(data['hourly']['precipitation_probability'][idx]),
+                "wind": round(data['hourly']['windspeed_10m'][idx]),
+                "windDeg": round(data['hourly']['winddirection_10m'][idx]),
+                "src": "Open-Meteo"
+            }
+        except requests.exceptions.Timeout:
+            if attempt < retries - 1:
+                print(f"  Timeout attempt {attempt+1}/{retries}, retrying...")
+                time.sleep(3)
+            else:
+                raise
+        except Exception:
+            raise
 
-def fetch_wttr(lat, lon, iso_date, hour):
+def fetch_wttr(lat, lon, iso_date, hour, retries=2):
     url = f"https://wttr.in/{lat},{lon}?format=j1"
-    r = requests.get(url, timeout=10)
-    r.raise_for_status()
-    data = r.json()
-    from datetime import date
-    today = date.today()
-    stage_date = date.fromisoformat(iso_date)
-    day_diff = (stage_date - today).days
-    if day_diff < 0 or day_diff > 2 or day_diff >= len(data['weather']):
-        return None
-    day_data = data['weather'][day_diff]
-    slots = [0, 3, 6, 9, 12, 15, 18, 21]
-    nearest = min(slots, key=lambda x: abs(x - hour))
-    slot_idx = nearest // 3
-    h = day_data['hourly'][slot_idx]
-    wc = int(h['weatherCode'])
-    code = 3
-    if wc <= 113: code = 0
-    elif wc <= 116: code = 1
-    elif wc <= 119: code = 2
-    elif wc <= 122: code = 3
-    elif wc <= 263: code = 61
-    elif wc <= 299: code = 63
-    elif wc <= 374: code = 71
-    elif wc <= 389: code = 95
-    return {
-        "temp": round(float(h['tempC'])),
-        "code": code,
-        "rain": round(float(h['chanceofrain'])),
-        "wind": round(float(h['windspeedKmph'])),
-        "windDeg": float(h['winddirDegree']),
-        "src": "wttr.in"
-    }
+    for attempt in range(retries):
+        try:
+            r = requests.get(url, timeout=20)
+            r.raise_for_status()
+            data = r.json()
+            from datetime import date
+            today = date.today()
+            stage_date = date.fromisoformat(iso_date)
+            day_diff = (stage_date - today).days
+            if day_diff < 0 or day_diff > 2 or day_diff >= len(data['weather']):
+                return None
+            day_data = data['weather'][day_diff]
+            slots = [0, 3, 6, 9, 12, 15, 18, 21]
+            nearest = min(slots, key=lambda x: abs(x - hour))
+            slot_idx = nearest // 3
+            h = day_data['hourly'][slot_idx]
+            wc = int(h['weatherCode'])
+            code = 3
+            if wc <= 113: code = 0
+            elif wc <= 116: code = 1
+            elif wc <= 119: code = 2
+            elif wc <= 122: code = 3
+            elif wc <= 263: code = 61
+            elif wc <= 299: code = 63
+            elif wc <= 374: code = 71
+            elif wc <= 389: code = 95
+            return {
+                "temp": round(float(h['tempC'])),
+                "code": code,
+                "rain": round(float(h['chanceofrain'])),
+                "wind": round(float(h['windspeedKmph'])),
+                "windDeg": float(h['winddirDegree']),
+                "src": "wttr.in"
+            }
+        except requests.exceptions.Timeout:
+            if attempt < retries - 1:
+                time.sleep(2)
+            else:
+                raise
+        except Exception:
+            raise
 
 results = {}
 for p in POINTS:
@@ -105,7 +124,7 @@ for p in POINTS:
         except Exception as e:
             print(f"✗ wttr.in E{p['stage']} {p['label']}: {e}")
     results[key] = wx
-    time.sleep(0.3)
+    time.sleep(0.5)
 
 output = {
     "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -115,4 +134,5 @@ output = {
 with open('weather.json', 'w') as f:
     json.dump(output, f, indent=2)
 
-print(f"\nDone. {sum(1 for v in results.values() if v)} / {len(results)} points fetched.")
+fetched = sum(1 for v in results.values() if v)
+print(f"\nDone. {fetched} / {len(results)} points fetched.")
