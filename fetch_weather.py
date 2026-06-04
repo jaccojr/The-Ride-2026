@@ -1,4 +1,4 @@
-import requests, json, time
+import requests, json, time, os
 from datetime import datetime, timezone
 
 POINTS = [
@@ -103,7 +103,20 @@ def fetch_wttr(lat, lon, iso_date, hour, retries=2):
         except Exception:
             raise
 
-results = {}
+# Load existing weather.json to preserve data for failed points
+existing = {}
+if os.path.exists('weather.json'):
+    try:
+        with open('weather.json') as f:
+            old = json.load(f)
+            existing = old.get('data', {})
+        print(f"Loaded existing data: {sum(1 for v in existing.values() if v)} points")
+    except Exception as e:
+        print(f"Could not load existing weather.json: {e}")
+
+results = dict(existing)  # start with existing data
+updated = 0
+
 for p in POINTS:
     key = f"{p['stage']}-{p['point']}"
     wx = None
@@ -123,7 +136,13 @@ for p in POINTS:
                 print(f"✗ wttr.in E{p['stage']} {p['label']}: outside window")
         except Exception as e:
             print(f"✗ wttr.in E{p['stage']} {p['label']}: {e}")
-    results[key] = wx
+
+    if wx:
+        results[key] = wx
+        updated += 1
+    elif key in existing and existing[key]:
+        print(f"  → Keeping existing data for E{p['stage']} {p['label']}")
+
     time.sleep(0.5)
 
 output = {
@@ -134,5 +153,5 @@ output = {
 with open('weather.json', 'w') as f:
     json.dump(output, f, indent=2)
 
-fetched = sum(1 for v in results.values() if v)
-print(f"\nDone. {fetched} / {len(results)} points fetched.")
+total = sum(1 for v in results.values() if v)
+print(f"\nDone. {updated} updated, {total} / {len(results)} points available.")
