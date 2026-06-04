@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-04T20:52:44Z",
+  "updated": "2026-06-04T20:58:59Z",
   "data": {
     "1-0": {
       "temp": 18,
@@ -57,7 +57,14 @@
       "windDeg": 81,
       "src": "Open-Meteo"
     },
-    "3-1": null,
+    "3-1": {
+      "temp": 21,
+      "code": 3,
+      "rain": 25,
+      "wind": 6,
+      "windDeg": 299,
+      "src": "Open-Meteo"
+    },
     "3-2": {
       "temp": 23,
       "code": 3,
