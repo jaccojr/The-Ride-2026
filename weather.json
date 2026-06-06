@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-06T20:21:04Z",
+  "updated": "2026-06-06T22:15:34Z",
   "data": {
     "1-0": {
       "temp": 15,
@@ -44,81 +44,81 @@
     "2-2": {
       "temp": 28,
       "code": 2,
-      "rain": 31,
+      "rain": 10,
       "wind": 7,
       "windDeg": 307,
       "src": "Open-Meteo"
     },
     "3-0": {
-      "temp": 16,
-      "code": 3,
-      "rain": 18,
-      "wind": 3,
-      "windDeg": 346,
+      "temp": 15,
+      "code": 45,
+      "rain": 3,
+      "wind": 4,
+      "windDeg": 325,
       "src": "Open-Meteo"
     },
     "3-1": {
       "temp": 18,
       "code": 3,
-      "rain": 15,
-      "wind": 5,
-      "windDeg": 295,
+      "rain": 5,
+      "wind": 6,
+      "windDeg": 280,
       "src": "Open-Meteo"
     },
     "3-2": {
       "temp": 21,
       "code": 3,
-      "rain": 2,
-      "wind": 11,
-      "windDeg": 294,
+      "rain": 0,
+      "wind": 10,
+      "windDeg": 292,
       "src": "Open-Meteo"
     },
     "4-0": {
       "temp": 14,
-      "code": 3,
+      "code": 2,
       "rain": 0,
-      "wind": 1,
-      "windDeg": 225,
+      "wind": 3,
+      "windDeg": 67,
       "src": "Open-Meteo"
     },
     "4-1": {
       "temp": 12,
       "code": 3,
-      "rain": 3,
-      "wind": 9,
-      "windDeg": 310,
+      "rain": 0,
+      "wind": 10,
+      "windDeg": 339,
       "src": "Open-Meteo"
     },
     "4-2": {
-      "temp": 17,
+      "temp": 18,
       "code": 3,
-      "rain": 7,
-      "wind": 9,
-      "windDeg": 272,
+      "rain": 3,
+      "wind": 10,
+      "windDeg": 287,
       "src": "Open-Meteo"
     },
     "5-0": {
-      "temp": 12,
-      "code": 2,
-      "rain": 19,
+      "temp": 11,
+      "code": 3,
+      "rain": 5,
       "wind": 2,
-      "windDeg": 129,
+      "windDeg": 121,
       "src": "Open-Meteo"
     },
     "5-1": {
-      "temp": 19,
+      "temp": 18,
       "code": 3,
-      "rain": 14,
-      "wind": 8,
-      "windDeg": 268,
+      "rain": 10,
+      "wind": 11,
+      "windDeg": 280,
       "src": "Open-Meteo"
     },
     "5-2": {
-      "temp": 15,
+      "temp": 16,
       "code": 2,
-      "rain": 21,
-      "wind": 13,
-      "windDeg": 264,
+      "rain": 13,
+      "wind": 15,
+      "windDeg": 281,
       "src": "Open-Meteo"
     },
     "6-0": {
