@@ -1,29 +1,29 @@
 {
-  "updated": "2026-06-07T20:24:23Z",
+  "updated": "2026-06-07T22:18:34Z",
   "data": {
     "1-0": {
-      "temp": 16,
-      "code": 1,
-      "rain": 0,
+      "temp": 22,
+      "code": 0,
+      "rain": 1,
       "wind": 2,
-      "windDeg": 333,
-      "src": "Open-Meteo"
+      "windDeg": 189.0,
+      "src": "wttr.in"
     },
     "1-1": {
-      "temp": 23,
-      "code": 2,
+      "temp": 24,
+      "code": 0,
       "rain": 0,
-      "wind": 9,
-      "windDeg": 279,
-      "src": "Open-Meteo"
+      "wind": 11,
+      "windDeg": 231.0,
+      "src": "wttr.in"
     },
     "1-2": {
-      "temp": 25,
-      "code": 1,
+      "temp": 22,
+      "code": 0,
       "rain": 0,
-      "wind": 12,
-      "windDeg": 270,
-      "src": "Open-Meteo"
+      "wind": 10,
+      "windDeg": 238.0,
+      "src": "wttr.in"
     },
     "2-0": {
       "temp": 15,
@@ -44,7 +44,7 @@
     "2-2": {
       "temp": 27,
       "code": 2,
-      "rain": 10,
+      "rain": 30,
       "wind": 5,
       "windDeg": 315,
       "src": "Open-Meteo"
@@ -52,7 +52,7 @@
     "3-0": {
       "temp": 16,
       "code": 3,
-      "rain": 5,
+      "rain": 10,
       "wind": 3,
       "windDeg": 13,
       "src": "Open-Meteo"
@@ -60,7 +60,7 @@
     "3-1": {
       "temp": 17,
       "code": 3,
-      "rain": 3,
+      "rain": 0,
       "wind": 12,
       "windDeg": 33,
       "src": "Open-Meteo"
@@ -75,74 +75,74 @@
     },
     "4-0": {
       "temp": 13,
-      "code": 1,
+      "code": 2,
       "rain": 0,
-      "wind": 3,
-      "windDeg": 214,
+      "wind": 4,
+      "windDeg": 197,
       "src": "Open-Meteo"
     },
     "4-1": {
       "temp": 10,
       "code": 3,
-      "rain": 4,
+      "rain": 3,
       "wind": 12,
-      "windDeg": 316,
+      "windDeg": 311,
       "src": "Open-Meteo"
     },
     "4-2": {
-      "temp": 16,
-      "code": 2,
-      "rain": 17,
-      "wind": 13,
-      "windDeg": 297,
+      "temp": 17,
+      "code": 1,
+      "rain": 33,
+      "wind": 10,
+      "windDeg": 280,
       "src": "Open-Meteo"
     },
     "5-0": {
-      "temp": 12,
+      "temp": 11,
       "code": 3,
-      "rain": 5,
+      "rain": 3,
       "wind": 2,
-      "windDeg": 99,
+      "windDeg": 112,
       "src": "Open-Meteo"
     },
     "5-1": {
-      "temp": 19,
-      "code": 2,
-      "rain": 5,
-      "wind": 8,
-      "windDeg": 257,
+      "temp": 17,
+      "code": 3,
+      "rain": 4,
+      "wind": 2,
+      "windDeg": 202,
       "src": "Open-Meteo"
     },
     "5-2": {
-      "temp": 16,
+      "temp": 14,
       "code": 3,
-      "rain": 6,
-      "wind": 13,
-      "windDeg": 242,
+      "rain": 5,
+      "wind": 10,
+      "windDeg": 241,
       "src": "Open-Meteo"
     },
     "6-0": {
-      "temp": 11,
+      "temp": 10,
       "code": 3,
-      "rain": 23,
-      "wind": 23,
-      "windDeg": 245,
+      "rain": 25,
+      "wind": 12,
+      "windDeg": 261,
       "src": "Open-Meteo"
     },
     "6-1": {
-      "temp": 16,
-      "code": 3,
-      "rain": 24,
-      "wind": 20,
-      "windDeg": 249,
+      "temp": 15,
+      "code": 61,
+      "rain": 20,
+      "wind": 18,
+      "windDeg": 267,
       "src": "Open-Meteo"
     },
     "6-2": {
-      "temp": 19,
-      "code": 2,
-      "rain": 14,
-      "wind": 24,
-      "windDeg": 280,
+      "temp": 16,
+      "code": 61,
+      "rain": 17,
+      "wind": 22,
+      "windDeg": 271,
       "src": "Open-Meteo"
     },
     "7-0": {
