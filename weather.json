@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-10T19:49:36Z",
+  "updated": "2026-06-10T22:18:48Z",
   "data": {
     "1-0": {
       "temp": 22,
@@ -75,27 +75,27 @@
     },
     "4-0": {
       "temp": 14,
-      "code": 3,
-      "rain": 0,
-      "wind": 1,
-      "windDeg": 326,
-      "src": "Open-Meteo"
+      "code": 0,
+      "rain": 4,
+      "wind": 5,
+      "windDeg": 7.0,
+      "src": "wttr.in"
     },
     "4-1": {
-      "temp": 9,
-      "code": 61,
+      "temp": 12,
+      "code": 0,
       "rain": 3,
-      "wind": 11,
-      "windDeg": 301,
-      "src": "Open-Meteo"
+      "wind": 6,
+      "windDeg": 318.0,
+      "src": "wttr.in"
     },
     "4-2": {
-      "temp": 15,
-      "code": 3,
-      "rain": 58,
-      "wind": 11,
-      "windDeg": 261,
-      "src": "Open-Meteo"
+      "temp": 19,
+      "code": 1,
+      "rain": 3,
+      "wind": 13,
+      "windDeg": 270.0,
+      "src": "wttr.in"
     },
     "5-0": {
       "temp": 10,
@@ -124,7 +124,7 @@
     "6-0": {
       "temp": 11,
       "code": 3,
-      "rain": 65,
+      "rain": 78,
       "wind": 17,
       "windDeg": 249,
       "src": "Open-Meteo"
@@ -132,7 +132,7 @@
     "6-1": {
       "temp": 17,
       "code": 3,
-      "rain": 8,
+      "rain": 23,
       "wind": 16,
       "windDeg": 252,
       "src": "Open-Meteo"
@@ -140,7 +140,7 @@
     "6-2": {
       "temp": 19,
       "code": 3,
-      "rain": 0,
+      "rain": 3,
       "wind": 16,
       "windDeg": 276,
       "src": "Open-Meteo"
