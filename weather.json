@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-11T21:35:31Z",
+  "updated": "2026-06-11T23:51:12Z",
   "data": {
     "1-0": {
       "temp": 22,
@@ -98,28 +98,28 @@
       "src": "wttr.in"
     },
     "5-0": {
-      "temp": 10,
-      "code": 45,
-      "rain": 0,
-      "wind": 2,
-      "windDeg": 18,
-      "src": "Open-Meteo"
+      "temp": 14,
+      "code": 2,
+      "rain": 14,
+      "wind": 12,
+      "windDeg": 218.0,
+      "src": "wttr.in"
     },
     "5-1": {
-      "temp": 15,
+      "temp": 13,
       "code": 3,
-      "rain": 0,
-      "wind": 12,
-      "windDeg": 268,
-      "src": "Open-Meteo"
+      "rain": 27,
+      "wind": 9,
+      "windDeg": 225.0,
+      "src": "wttr.in"
     },
     "5-2": {
-      "temp": 12,
-      "code": 3,
-      "rain": 0,
-      "wind": 16,
-      "windDeg": 270,
-      "src": "Open-Meteo"
+      "temp": 11,
+      "code": 61,
+      "rain": 41,
+      "wind": 9,
+      "windDeg": 229.0,
+      "src": "wttr.in"
     },
     "6-0": {
       "temp": 11,
@@ -156,41 +156,41 @@
     "7-1": {
       "temp": 18,
       "code": 0,
-      "rain": 4,
-      "wind": 20,
-      "windDeg": 270,
+      "rain": 6,
+      "wind": 19,
+      "windDeg": 269,
       "src": "Open-Meteo"
     },
     "7-2": {
       "temp": 17,
       "code": 2,
       "rain": 0,
-      "wind": 13,
-      "windDeg": 293,
+      "wind": 12,
+      "windDeg": 292,
       "src": "Open-Meteo"
     },
     "8-0": {
       "temp": 12,
       "code": 3,
       "rain": 2,
-      "wind": 10,
-      "windDeg": 290,
+      "wind": 7,
+      "windDeg": 300,
       "src": "Open-Meteo"
     },
     "8-1": {
-      "temp": 15,
-      "code": 51,
-      "rain": 63,
-      "wind": 16,
-      "windDeg": 299,
+      "temp": 14,
+      "code": 3,
+      "rain": 69,
+      "wind": 15,
+      "windDeg": 290,
       "src": "Open-Meteo"
     },
     "8-2": {
-      "temp": 17,
-      "code": 3,
-      "rain": 24,
-      "wind": 20,
-      "windDeg": 295,
+      "temp": 18,
+      "code": 2,
+      "rain": 19,
+      "wind": 17,
+      "windDeg": 292,
       "src": "Open-Meteo"
     }
   }
