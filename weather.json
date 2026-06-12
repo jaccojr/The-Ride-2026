@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-11T23:51:12Z",
+  "updated": "2026-06-12T04:57:40Z",
   "data": {
     "1-0": {
       "temp": 22,
@@ -125,72 +125,72 @@
       "temp": 11,
       "code": 61,
       "rain": 68,
-      "wind": 14,
+      "wind": 15,
       "windDeg": 232,
       "src": "Open-Meteo"
     },
     "6-1": {
       "temp": 16,
       "code": 3,
-      "rain": 5,
-      "wind": 11,
-      "windDeg": 243,
+      "rain": 8,
+      "wind": 13,
+      "windDeg": 251,
       "src": "Open-Meteo"
     },
     "6-2": {
-      "temp": 19,
+      "temp": 18,
       "code": 3,
       "rain": 0,
-      "wind": 19,
-      "windDeg": 268,
+      "wind": 17,
+      "windDeg": 276,
       "src": "Open-Meteo"
     },
     "7-0": {
       "temp": 16,
       "code": 3,
       "rain": 0,
-      "wind": 15,
-      "windDeg": 258,
+      "wind": 16,
+      "windDeg": 255,
       "src": "Open-Meteo"
     },
     "7-1": {
       "temp": 18,
       "code": 0,
-      "rain": 6,
+      "rain": 13,
       "wind": 19,
-      "windDeg": 269,
+      "windDeg": 263,
       "src": "Open-Meteo"
     },
     "7-2": {
-      "temp": 17,
-      "code": 2,
+      "temp": 18,
+      "code": 1,
       "rain": 0,
-      "wind": 12,
-      "windDeg": 292,
+      "wind": 13,
+      "windDeg": 288,
       "src": "Open-Meteo"
     },
     "8-0": {
-      "temp": 12,
+      "temp": 11,
       "code": 3,
-      "rain": 2,
-      "wind": 7,
-      "windDeg": 300,
+      "rain": 0,
+      "wind": 8,
+      "windDeg": 306,
       "src": "Open-Meteo"
     },
     "8-1": {
       "temp": 14,
       "code": 3,
-      "rain": 69,
-      "wind": 15,
+      "rain": 73,
+      "wind": 12,
       "windDeg": 290,
       "src": "Open-Meteo"
     },
     "8-2": {
       "temp": 18,
-      "code": 2,
-      "rain": 19,
-      "wind": 17,
-      "windDeg": 292,
+      "code": 3,
+      "rain": 24,
+      "wind": 15,
+      "windDeg": 291,
       "src": "Open-Meteo"
     }
   }
